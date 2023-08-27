@@ -24,15 +24,19 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredPassword = '';
   var _enteredUsername = '';
 
+  void showScaffold(String? text) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text ?? 'Some Error occured'),
+      ),
+    );
+  }
+
   void _submit() async {
     final isValid = _formKey.currentState!.validate();
     if (!isValid || !_isLogin && _selectedImage == null) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Some error Occured'),
-        ),
-      );
+      showScaffold('Some error Occured');
       return;
     }
 
@@ -48,13 +52,12 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         final userCredential = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
-        final storageRef = await FirebaseStorage.instance
+        final storageRef = FirebaseStorage.instance
             .ref()
             .child('user_images')
             .child('${userCredential.user!.uid}.jpg');
         storageRef.putFile(_selectedImage!);
         final imageUrl = await storageRef.getDownloadURL();
-        print(imageUrl);
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
@@ -65,12 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
         });
       }
     } on FirebaseException catch (error) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.message ?? 'Authentication Failed'),
-        ),
-      );
+      showScaffold(error.message);
       setState(() {
         _isAuthenticating = false;
       });
