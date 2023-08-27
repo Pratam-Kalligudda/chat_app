@@ -6,6 +6,14 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
 import 'package:chat_app/screens/auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+final theme = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+      brightness: Brightness.dark, seedColor: Color.fromARGB(255, 28, 18, 10)),
+  textTheme: GoogleFonts.latoTextTheme(),
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,11 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'FlutterChat',
-        theme: ThemeData().copyWith(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 63, 17, 177)),
-        ),
+        theme: theme,
         home: StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (ctx, snapshot) {

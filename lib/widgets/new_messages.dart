@@ -50,6 +50,7 @@ class _NewMessagesState extends State<NewMessages> {
         children: [
           Expanded(
             child: TextField(
+              style: const TextStyle(color: Colors.white54),
               controller: _messageController,
               textCapitalization: TextCapitalization.sentences,
               autocorrect: true,

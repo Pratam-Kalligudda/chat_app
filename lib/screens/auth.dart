@@ -47,7 +47,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isAuthenticating = true;
       });
       if (_isLogin) {
-        final userCredential = await _firebase.signInWithEmailAndPassword(
+        await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
       } else {
         final userCredential = await _firebase.createUserWithEmailAndPassword(
@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .ref()
             .child('user_images')
             .child('${userCredential.user!.uid}.jpg');
-        storageRef.putFile(_selectedImage!);
+        await storageRef.putFile(_selectedImage!);
         final imageUrl = await storageRef.getDownloadURL();
         await FirebaseFirestore.instance
             .collection('users')
@@ -66,6 +66,7 @@ class _AuthScreenState extends State<AuthScreen> {
           'email': _enteredEmail,
           'image_url': imageUrl
         });
+        print('reached this code');
       }
     } on FirebaseException catch (error) {
       showScaffold(error.message);
